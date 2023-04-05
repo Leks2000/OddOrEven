@@ -2,6 +2,8 @@ package com.example.oddoreven
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,8 +24,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         openFrag(OneFragment.newInstance(), R.id.OneFrame)
         openFrag(TwoFragment.newInstance(), R.id.TwoFrame)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.Start.setOnClickListener{
-            if (binding.Start.isEnabled == true){
+            if (binding.Start.text == "Играть"){
                 randStart()
                 dataModel.messageFromActivty.value = First
                 dataModel.messageFromActivitySum.value = Second
@@ -39,19 +42,12 @@ class MainActivity : AppCompatActivity() {
                 dataModel.messageFromActivityResultFromUser.value = result.toInt()
 
                 dataModel.BtnClickFragment.value = true
-                binding.Start.isEnabled = false
-                binding.Continue.isVisible = true
-                binding.Close.isVisible = true
-            }
-            binding.Continue.setOnClickListener(){
-                binding.Start.isEnabled = true
-                binding.Continue.isVisible = false
-                binding.Close.isVisible = false
+                binding.Start.text = "Продолжить"
+            }else{
+                binding.Start.text = "Играть"
                 dataModel.BtnClickFragment.value = false
             }
-            binding.Close.setOnClickListener(){
-                finish()
-            }
+
         }
         dataModel.messageCount.observe(this) {
             binding.textforcomputer.text = it
@@ -64,6 +60,17 @@ class MainActivity : AppCompatActivity() {
                 binding.Start.isEnabled = true
             }
         }
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return  true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+            finishAndRemoveTask()
+        }
+        return true
     }
     private fun check() {
         if (Second.toInt() % 2 == 0){
